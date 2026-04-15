@@ -2,176 +2,181 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>Smart Bag Control</title>
-  <!-- DESIGN UPGRADE: Inter font for modern typography -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    /* ══════════════════════════════════════════════
-       RESET & BASE
-    ══════════════════════════════════════════════ */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* DESIGN UPGRADE: Refined color palette — deeper, richer, more premium */
-      --bg:            #0d0f14;
-      --bg-2:          #141720;
-      --surface:       #1a1d27;
-      --surface-2:     #20243a;
-      --border:        rgba(255,255,255,0.07);
-      --border-light:  rgba(255,255,255,0.12);
+      --bg:           #f5f4f0;
+      --bg-app:       #ffffff;
+      --surface:      #fafaf8;
+      --surface-2:    #f2f1ed;
+      --surface-3:    #e8e7e2;
 
-      --text-primary:   #f0f2f8;
-      --text-secondary: #8891a8;
-      --text-muted:     #4a5060;
+      --border:       rgba(0,0,0,0.08);
+      --border-md:    rgba(0,0,0,0.13);
+      --border-strong:rgba(0,0,0,0.2);
 
-      /* DESIGN UPGRADE: Vibrant accent with glow-compatible hues */
-      --accent:        #6c63ff;
-      --accent-2:      #4f8ef7;
-      --accent-grad:   linear-gradient(135deg, #6c63ff 0%, #4f8ef7 100%);
+      --text-primary:   #1a1916;
+      --text-secondary: #5c5a54;
+      --text-muted:     #9c9a93;
+      --text-faint:     #bbb9b2;
 
-      --danger:        #f05e5e;
-      --danger-soft:   rgba(240,94,94,0.12);
-      --success:       #3dd68c;
-      --success-soft:  rgba(61,214,140,0.12);
-      --warning:       #f5a623;
-      --warning-soft:  rgba(245,166,35,0.12);
-      --lost:          #f05e5e;
+      --accent:       #2d6a4f;
+      --accent-light: #e8f5ee;
+      --accent-mid:   #52b788;
 
-      /* DESIGN UPGRADE: Glow shadows for premium IoT feel */
-      --glow-accent:   0 0 24px rgba(108,99,255,0.25), 0 0 8px rgba(108,99,255,0.15);
-      --glow-success:  0 0 18px rgba(61,214,140,0.2);
-      --glow-danger:   0 0 18px rgba(240,94,94,0.25);
+      --blue:         #2563eb;
+      --blue-light:   #eff6ff;
 
-      --radius-sm:  8px;
-      --radius-md:  14px;
-      --radius-lg:  20px;
-      --radius-xl:  28px;
-      --transition: .25s cubic-bezier(.4,0,.2,1);
+      --amber:        #b45309;
+      --amber-light:  #fffbeb;
+
+      --red:          #c0392b;
+      --red-light:    #fef2f2;
+
+      --green:        #2d6a4f;
+      --green-light:  #e8f5ee;
+
+      --radius-sm:  6px;
+      --radius-md:  10px;
+      --radius-lg:  16px;
+      --radius-xl:  22px;
+      --radius-pill:99px;
+
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
+      --shadow-lg:  0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
+
+      --t: .2s cubic-bezier(.4,0,.2,1);
     }
 
-    html { font-size: 16px; }
+    html { font-size: 16px; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
 
     body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: 'DM Sans', -apple-system, sans-serif;
       background: var(--bg);
       color: var(--text-primary);
       min-height: 100vh;
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: center;
+      align-items: flex-start;
     }
 
-    /* ══════════════════════════════════════════════
-       APP SHELL
-    ══════════════════════════════════════════════ */
+    /* ── APP SHELL ── */
     .app-shell {
       width: 100%;
       max-width: 430px;
       min-height: 100vh;
-      background: var(--bg);
+      background: var(--bg-app);
       display: flex;
       flex-direction: column;
       position: relative;
-      overflow-x: hidden;
     }
 
-    /* ══════════════════════════════════════════════
-       SCROLLABLE CONTENT
-    ══════════════════════════════════════════════ */
+    /* ── PAGES ── */
+    .page { display: none; flex-direction: column; flex: 1; }
+    .page.active { display: flex; }
+
+    /* ── SCROLL AREA ── */
     .scroll-area {
       flex: 1;
       overflow-y: auto;
-      padding: 0 16px 96px;
+      padding: 16px 16px 100px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
     }
 
-    /* ══════════════════════════════════════════════
+    /* ══════════════════════════════════
        HEADER
-    ══════════════════════════════════════════════ */
+    ══════════════════════════════════ */
     header {
-      padding: 24px 16px 10px;
+      padding: 20px 18px 14px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: var(--bg-app);
+      border-bottom: 1px solid var(--border);
       position: sticky;
       top: 0;
-      /* DESIGN UPGRADE: frosted glass header */
-      background: rgba(13,15,20,0.85);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      z-index: 10;
-      border-bottom: 1px solid var(--border);
+      z-index: 20;
+    }
+
+    .header-brand { display: flex; align-items: center; gap: 10px; }
+
+    .brand-icon {
+      width: 34px; height: 34px;
+      background: var(--accent);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      color: #fff;
+      flex-shrink: 0;
     }
 
     .header-left h1 {
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: -.4px;
-      background: var(--accent-grad);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      font-size: .95rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -.2px;
     }
 
     .header-left p {
-      font-size: .7rem;
+      font-size: .68rem;
       color: var(--text-muted);
-      margin-top: 2px;
-      font-weight: 500;
-      letter-spacing: .4px;
-      text-transform: uppercase;
+      font-weight: 400;
+      margin-top: 1px;
     }
 
-    /* DESIGN UPGRADE: Animated connection badge with glow */
     .status-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       font-size: .68rem;
-      font-weight: 700;
-      padding: 6px 13px;
-      border-radius: 99px;
-      background: var(--success-soft);
-      color: var(--success);
-      border: 1px solid rgba(61,214,140,0.2);
-      transition: var(--transition);
-      letter-spacing: .3px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid rgba(45,106,79,0.2);
+      transition: var(--t);
     }
 
     .status-badge.disconnected {
-      background: var(--danger-soft);
-      color: var(--danger);
-      border-color: rgba(240,94,94,0.2);
+      background: var(--red-light);
+      color: var(--red);
+      border-color: rgba(192,57,43,0.2);
     }
 
     .status-dot {
       width: 6px; height: 6px;
       border-radius: 50%;
       background: currentColor;
-      animation: statusPulse 2s infinite;
     }
 
-    @keyframes statusPulse {
-      0%,100% { opacity: 1; box-shadow: 0 0 0 0 currentColor; }
-      50%      { opacity: .6; box-shadow: 0 0 0 3px transparent; }
+    .status-dot.pulse { animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: .4; }
     }
 
-    /* ══════════════════════════════════════════════
+    /* ══════════════════════════════════
        SECTION LABELS
-    ══════════════════════════════════════════════ */
+    ══════════════════════════════════ */
     .section-label {
-      font-size: .64rem;
-      font-weight: 700;
-      letter-spacing: 1.2px;
+      font-size: .63rem;
+      font-weight: 600;
+      letter-spacing: .9px;
       text-transform: uppercase;
       color: var(--text-muted);
-      padding: 6px 0 2px;
       display: flex;
       align-items: center;
       gap: 8px;
+      padding: 4px 0 0;
     }
 
     .section-label::after {
@@ -181,73 +186,52 @@
       background: var(--border);
     }
 
-    /* ══════════════════════════════════════════════
-       CENTRAL STATE CARD
-    ══════════════════════════════════════════════ */
-    /* DESIGN UPGRADE: Deep layered card with subtle inner border */
+    /* ══════════════════════════════════
+       CENTRAL CARD
+    ══════════════════════════════════ */
     .central-card {
       background: var(--surface);
       border-radius: var(--radius-xl);
-      padding: 32px 20px 26px;
+      border: 1px solid var(--border-md);
+      padding: 28px 20px 22px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 22px;
-      border: 1px solid var(--border-light);
-      position: relative;
-      overflow: hidden;
-    }
-
-    /* DESIGN UPGRADE: Subtle radial glow behind ring */
-    .central-card::before {
-      content: '';
-      position: absolute;
-      top: 20px; left: 50%;
-      transform: translateX(-50%);
-      width: 180px; height: 180px;
-      border-radius: 50%;
-      background: radial-gradient(circle, rgba(108,99,255,0.1) 0%, transparent 70%);
-      pointer-events: none;
+      gap: 20px;
     }
 
     /* ── STATE RING ── */
     .state-ring-wrap {
       position: relative;
-      width: 160px; height: 160px;
+      width: 148px;
+      height: 148px;
     }
 
     .state-ring-svg {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       transform: rotate(-90deg);
     }
 
     .ring-bg {
       fill: none;
-      stroke: rgba(255,255,255,0.05);
-      stroke-width: 9;
+      stroke: var(--surface-3);
+      stroke-width: 8;
     }
 
-    /* DESIGN UPGRADE: Gradient ring stroke via linearGradient */
     .ring-fill {
       fill: none;
-      stroke: url(#ringGrad);
-      stroke-width: 9;
+      stroke: var(--accent);
+      stroke-width: 8;
       stroke-linecap: round;
-      stroke-dasharray: 432;
-      stroke-dashoffset: 108; /* 75% */
-      transition: stroke-dashoffset .7s cubic-bezier(.4,0,.2,1), stroke .4s ease;
-      filter: drop-shadow(0 0 6px rgba(108,99,255,0.45));
+      stroke-dasharray: 408;
+      stroke-dashoffset: 306;
+      transition: stroke-dashoffset .7s cubic-bezier(.4,0,.2,1), stroke .4s;
     }
 
-    .ring-fill.lost-ring {
-      stroke: var(--danger);
-      filter: drop-shadow(0 0 8px rgba(240,94,94,0.5));
-    }
-
-    .ring-fill.moving-ring {
-      stroke: url(#ringGradGreen);
-      filter: drop-shadow(0 0 6px rgba(61,214,140,0.4));
-    }
+    .ring-fill.ring-moving { stroke: #2563eb; }
+    .ring-fill.ring-lost   { stroke: var(--red); }
+    .ring-fill.ring-warn   { stroke: var(--amber); }
 
     .state-label {
       position: absolute;
@@ -256,48 +240,56 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 4px;
+      gap: 3px;
+      text-align: center;
     }
 
-    /* DESIGN UPGRADE: State icon replaced by dot indicator */
-    .state-status-dot {
-      width: 10px; height: 10px;
+    .state-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 9px;
+      border-radius: var(--radius-pill);
+      font-size: .6rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      background: var(--green-light);
+      color: var(--green);
+      border: 1px solid rgba(45,106,79,0.15);
+      transition: var(--t);
+    }
+
+    .state-pill-dot {
+      width: 5px; height: 5px;
       border-radius: 50%;
-      background: var(--accent);
-      box-shadow: 0 0 10px var(--accent), 0 0 20px rgba(108,99,255,0.3);
-      margin-bottom: 4px;
-      transition: background var(--transition), box-shadow var(--transition);
+      background: currentColor;
     }
 
-    .state-status-dot.moving { background: var(--success); box-shadow: var(--glow-success); }
-    .state-status-dot.lost   { background: var(--danger);  box-shadow: var(--glow-danger); animation: dangerFlash 1s infinite; }
+    .state-pill.warn   { background: var(--amber-light); color: var(--amber); border-color: rgba(180,83,9,.15); }
+    .state-pill.danger { background: var(--red-light);   color: var(--red);   border-color: rgba(192,57,43,.15); animation: flashPill 1s infinite; }
+    .state-pill.blue   { background: var(--blue-light);  color: var(--blue);  border-color: rgba(37,99,235,.15); }
+    .state-pill.neutral{ background: var(--surface-2);   color: var(--text-muted); border-color: var(--border); }
 
-    @keyframes dangerFlash {
-      0%,100% { opacity: 1; } 50% { opacity: .3; }
-    }
+    @keyframes flashPill { 0%,100% {opacity:1;} 50% {opacity:.5;} }
 
     .state-text {
-      font-size: 1.05rem;
-      font-weight: 800;
-      letter-spacing: 1.2px;
-      text-transform: uppercase;
+      font-size: .95rem;
+      font-weight: 700;
+      letter-spacing: -.2px;
       color: var(--text-primary);
     }
 
     .state-sub {
       font-size: .62rem;
       color: var(--text-muted);
-      font-weight: 500;
-      letter-spacing: .4px;
-      text-transform: uppercase;
+      font-weight: 400;
     }
 
-    /* ══════════════════════════════════════════════
-       ACTION BUTTONS
-    ══════════════════════════════════════════════ */
+    /* ── ACTION ROW ── */
     .action-row {
       display: flex;
-      gap: 12px;
+      gap: 10px;
       width: 100%;
     }
 
@@ -306,86 +298,99 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      padding: 15px 12px;
+      gap: 7px;
+      padding: 13px 10px;
       border-radius: var(--radius-md);
-      border: none;
+      border: 1px solid var(--border-md);
       cursor: pointer;
-      font-size: .85rem;
-      font-weight: 700;
+      font-size: .83rem;
+      font-weight: 600;
       font-family: inherit;
-      transition: var(--transition);
+      transition: var(--t);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
-      letter-spacing: .2px;
-    }
-
-    .btn:active { transform: scale(.95); }
-
-    /* DESIGN UPGRADE: Gradient primary button with glow */
-    .btn-primary {
-      background: var(--accent-grad);
-      color: #fff;
-      box-shadow: var(--glow-accent);
-    }
-
-    .btn-primary:hover { filter: brightness(1.1); }
-
-    /* DESIGN UPGRADE: Stop state = danger gradient */
-    .btn-primary.active-stop {
-      background: linear-gradient(135deg, #f05e5e 0%, #c94040 100%);
-      box-shadow: var(--glow-danger);
-    }
-
-    .btn-secondary {
       background: var(--surface-2);
       color: var(--text-secondary);
-      border: 1px solid var(--border-light);
     }
 
-    .btn-secondary:hover {
-      background: var(--border);
-      color: var(--text-primary);
+    .btn:active { transform: scale(.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+      border-color: transparent;
+      box-shadow: var(--shadow-sm);
     }
 
-    /* ══════════════════════════════════════════════
-       DATA CARDS GRID
-    ══════════════════════════════════════════════ */
+    .btn-primary:hover { background: #245c42; }
+
+    .btn-primary.stop-mode {
+      background: var(--red);
+      border-color: transparent;
+    }
+
+    .btn-primary.stop-mode:hover { background: #a33020; }
+
+    .btn-secondary:hover { background: var(--surface-3); color: var(--text-primary); }
+
+    /* ══════════════════════════════════
+       STATUS INDICATOR ROW
+    ══════════════════════════════════ */
+    .status-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .status-chip {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 5px;
+      padding: 10px 6px;
+      border-radius: var(--radius-md);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: .6rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: .3px;
+      text-transform: uppercase;
+    }
+
+    .chip-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--surface-3);
+      transition: background var(--t), box-shadow var(--t);
+    }
+
+    .chip-dot.on   { background: var(--accent); box-shadow: 0 0 0 3px rgba(45,106,79,.12); }
+    .chip-dot.warn { background: var(--amber); }
+    .chip-dot.off  { background: var(--surface-3); }
+
+    /* ══════════════════════════════════
+       DATA CARDS
+    ══════════════════════════════════ */
     .cards-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
     }
 
-    /* DESIGN UPGRADE: Layered cards with hover lift + glow */
     .data-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 16px 15px;
+      padding: 15px 14px;
       display: flex;
       flex-direction: column;
       gap: 10px;
-      transition: border-color var(--transition), box-shadow var(--transition);
-      position: relative;
-      overflow: hidden;
+      transition: border-color var(--t);
     }
 
-    .data-card:hover {
-      border-color: var(--border-light);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-    }
-
-    /* DESIGN UPGRADE: Subtle top accent line on cards */
-    .data-card::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 16px; right: 16px;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent);
-    }
-
-    .data-card.full { grid-column: 1 / -1; }
+    .data-card:hover { border-color: var(--border-md); }
+    .data-card.full  { grid-column: 1 / -1; }
 
     .card-header {
       display: flex;
@@ -394,44 +399,42 @@
     }
 
     .card-title {
-      font-size: .62rem;
-      font-weight: 700;
+      font-size: .63rem;
+      font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: .8px;
+      letter-spacing: .7px;
     }
 
-    /* DESIGN UPGRADE: Icon replaced with colored dot/badge */
-    .card-badge {
-      font-size: .6rem;
+    .card-tag {
+      font-size: .58rem;
       font-weight: 700;
-      padding: 3px 8px;
-      border-radius: 99px;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
       letter-spacing: .3px;
+      text-transform: uppercase;
     }
 
-    .card-badge.accent { background: rgba(108,99,255,0.15); color: var(--accent); }
-    .card-badge.green  { background: var(--success-soft);  color: var(--success); }
-    .card-badge.red    { background: var(--danger-soft);   color: var(--danger); }
-    .card-badge.warn   { background: var(--warning-soft);  color: var(--warning); }
+    .tag-green  { background: var(--green-light);  color: var(--green); }
+    .tag-blue   { background: var(--blue-light);   color: var(--blue); }
+    .tag-amber  { background: var(--amber-light);  color: var(--amber); }
+    .tag-gray   { background: var(--surface-2);    color: var(--text-muted); }
 
-    /* DESIGN UPGRADE: Large bold values with tight leading */
     .card-value {
-      font-size: 1.5rem;
-      font-weight: 800;
+      font-size: 1.4rem;
+      font-weight: 700;
       line-height: 1;
       color: var(--text-primary);
-      letter-spacing: -.5px;
-      transition: color var(--transition);
+      letter-spacing: -.4px;
+      font-family: 'DM Mono', monospace;
     }
 
-    .card-value.lost { color: var(--lost); }
+    .card-value.lost-val { color: var(--red); }
 
     .card-sub {
-      font-size: .64rem;
+      font-size: .63rem;
       color: var(--text-muted);
-      font-weight: 500;
-      letter-spacing: .3px;
+      font-weight: 400;
       margin-top: -6px;
     }
 
@@ -440,14 +443,14 @@
       display: flex;
       align-items: flex-end;
       gap: 3px;
-      height: 24px;
+      height: 22px;
     }
 
     .bar {
       width: 5px;
       border-radius: 2px;
-      background: rgba(255,255,255,0.07);
-      transition: background .35s, box-shadow .35s;
+      background: var(--surface-3);
+      transition: background .3s;
     }
 
     .bar:nth-child(1) { height: 25%; }
@@ -456,14 +459,9 @@
     .bar:nth-child(4) { height: 80%; }
     .bar:nth-child(5) { height: 100%; }
 
-    /* DESIGN UPGRADE: Active bars glow */
-    .bar.active {
-      background: var(--success);
-      box-shadow: 0 0 6px rgba(61,214,140,0.4);
-    }
-
-    .bar.active.warn { background: var(--warning); box-shadow: 0 0 6px rgba(245,166,35,0.4); }
-    .bar.active.danger { background: var(--danger); box-shadow: 0 0 6px rgba(240,94,94,0.4); }
+    .bar.on         { background: var(--accent); }
+    .bar.on.sig-warn{ background: var(--amber); }
+    .bar.on.sig-bad { background: var(--red); }
 
     /* ── COMPASS ── */
     .compass-wrap {
@@ -472,73 +470,45 @@
       gap: 12px;
     }
 
-    /* DESIGN UPGRADE: Glowing compass ring */
     .compass-ring {
-      width: 46px; height: 46px;
-      border: 1.5px solid rgba(108,99,255,0.3);
+      width: 44px; height: 44px;
+      border: 1.5px solid var(--border-md);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      position: relative;
+      background: var(--surface-2);
       flex-shrink: 0;
-      background: rgba(108,99,255,0.05);
-      box-shadow: 0 0 10px rgba(108,99,255,0.1);
     }
 
     .compass-needle {
       width: 0; height: 0;
-      border-left: 5px solid transparent;
-      border-right: 5px solid transparent;
-      border-bottom: 18px solid var(--accent);
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 16px solid var(--accent);
       transition: transform .6s cubic-bezier(.4,0,.2,1);
-      filter: drop-shadow(0 0 4px rgba(108,99,255,0.5));
     }
 
     /* ── GPS CARD ── */
     .gps-content {
-      background: var(--bg-2);
+      background: var(--surface-2);
       border-radius: var(--radius-sm);
       border: 1px solid var(--border);
-      padding: 12px;
-      font-family: 'Courier New', monospace;
-      font-size: .75rem;
-      color: var(--accent-2);
+      padding: 10px 12px;
+      font-family: 'DM Mono', monospace;
+      font-size: .72rem;
+      color: var(--blue);
       line-height: 1.8;
-      min-height: 58px;
+      min-height: 52px;
       word-break: break-all;
     }
 
-    .coords-row {
-      display: flex;
-      gap: 12px;
-      margin-top: 4px;
-      flex-wrap: wrap;
-    }
-
-    .coord-item { display: flex; flex-direction: column; gap: 2px; }
-    .coord-label {
-      font-size: .58rem;
-      color: var(--text-muted);
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: .7px;
-    }
-    .coord-val {
-      font-size: .78rem;
-      font-weight: 700;
-      color: var(--accent-2);
-      font-family: 'Courier New', monospace;
-    }
-
-    /* ══════════════════════════════════════════════
+    /* ══════════════════════════════════
        NOTIFICATIONS
-    ══════════════════════════════════════════════ */
-    /* DESIGN UPGRADE: Terminal-style notification feed */
+    ══════════════════════════════════ */
     .notif-card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 14px 16px;
-      overflow: hidden;
     }
 
     .notif-header {
@@ -549,18 +519,18 @@
     }
 
     .notif-title {
-      font-size: .62rem;
-      font-weight: 700;
+      font-size: .63rem;
+      font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: .8px;
+      letter-spacing: .7px;
     }
 
     .notif-clear {
       font-size: .65rem;
       color: var(--accent);
       cursor: pointer;
-      font-weight: 700;
+      font-weight: 600;
       border: none;
       background: none;
       font-family: inherit;
@@ -573,24 +543,24 @@
     .notif-list {
       display: flex;
       flex-direction: column;
-      gap: 6px;
-      max-height: 130px;
+      gap: 4px;
+      max-height: 140px;
       overflow-y: auto;
     }
 
     .notif-item {
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 9px;
       font-size: .74rem;
-      animation: slideIn .3s ease;
-      padding: 6px 8px;
+      animation: slideIn .25s ease;
+      padding: 7px 8px;
       border-radius: var(--radius-sm);
-      background: rgba(255,255,255,0.025);
+      background: var(--surface-2);
     }
 
     @keyframes slideIn {
-      from { opacity: 0; transform: translateY(-5px); }
+      from { opacity: 0; transform: translateY(-4px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
@@ -601,35 +571,32 @@
       flex-shrink: 0;
     }
 
-    .notif-dot.info    { background: var(--accent);  box-shadow: 0 0 4px var(--accent); }
-    .notif-dot.warn    { background: var(--warning); box-shadow: 0 0 4px var(--warning); }
-    .notif-dot.danger  { background: var(--danger);  box-shadow: 0 0 4px var(--danger); }
-    .notif-dot.success { background: var(--success); box-shadow: 0 0 4px var(--success); }
+    .notif-dot.info    { background: var(--blue); }
+    .notif-dot.warn    { background: var(--amber); }
+    .notif-dot.danger  { background: var(--red); }
+    .notif-dot.success { background: var(--accent); }
 
-    .notif-msg  { flex: 1; color: var(--text-secondary); font-weight: 500; }
-    .notif-time { color: var(--text-muted); font-size: .62rem; flex-shrink: 0; font-family: monospace; }
+    .notif-msg  { flex: 1; color: var(--text-secondary); font-weight: 400; }
+    .notif-time { color: var(--text-faint); font-size: .6rem; flex-shrink: 0; font-family: 'DM Mono', monospace; }
 
-    /* ══════════════════════════════════════════════
+    /* ══════════════════════════════════
        BOTTOM NAV
-    ══════════════════════════════════════════════ */
-    /* DESIGN UPGRADE: Floating pill nav bar */
+    ══════════════════════════════════ */
     .bottom-nav {
       position: fixed;
-      bottom: 16px;
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: calc(100% - 32px);
-      max-width: 398px;
-      background: rgba(26,29,39,0.92);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid var(--border-light);
-      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 430px;
+      background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-top: 1px solid var(--border);
       display: flex;
       z-index: 100;
-      padding: 6px;
-      gap: 4px;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+      padding: 6px 16px calc(6px + env(safe-area-inset-bottom));
+      gap: 6px;
     }
 
     .nav-tab {
@@ -638,86 +605,69 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 3px;
-      padding: 10px 0;
+      gap: 4px;
+      padding: 10px 0 8px;
       cursor: pointer;
       border: none;
       background: none;
       font-family: inherit;
-      font-size: .64rem;
-      font-weight: 700;
+      font-size: .63rem;
+      font-weight: 600;
       color: var(--text-muted);
-      transition: var(--transition);
+      transition: var(--t);
       -webkit-tap-highlight-color: transparent;
       border-radius: var(--radius-md);
-      letter-spacing: .3px;
+      letter-spacing: .2px;
       text-transform: uppercase;
     }
 
-    /* DESIGN UPGRADE: Active tab gets gradient pill background */
     .nav-tab.active {
-      color: #fff;
-      background: var(--accent-grad);
-      box-shadow: var(--glow-accent);
+      color: var(--accent);
+      background: var(--green-light);
     }
 
-    .nav-tab-icon { font-size: 1.1rem; line-height: 1; }
+    .nav-icon {
+      font-size: 18px;
+      line-height: 1;
+    }
 
-    /* ══════════════════════════════════════════════
+    /* ══════════════════════════════════
        REMOTE PAGE
-    ══════════════════════════════════════════════ */
-    .page { display: none; flex-direction: column; flex: 1; overflow-y: auto; padding-bottom: 90px; }
-    .page.active { display: flex; }
-
-    .remote-page { align-items: center; }
+    ══════════════════════════════════ */
+    .remote-page { align-items: stretch; }
 
     .remote-header {
-      padding: 24px 16px 10px;
-      width: 100%;
+      padding: 20px 18px 14px;
+      background: var(--bg-app);
       border-bottom: 1px solid var(--border);
-      background: rgba(13,15,20,0.85);
-      backdrop-filter: blur(14px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
 
-    .remote-header h1 {
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: -.3px;
-    }
-
-    .remote-header p {
-      font-size: .68rem;
-      color: var(--text-muted);
-      margin-top: 2px;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: .5px;
-    }
+    .remote-header h1 { font-size: .95rem; font-weight: 700; }
+    .remote-header p  { font-size: .68rem; color: var(--text-muted); margin-top: 1px; }
 
     .remote-scroll {
       flex: 1;
       overflow-y: auto;
-      padding: 16px 16px 0;
+      padding: 16px 16px 100px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
-      align-items: center;
-      width: 100%;
+      gap: 12px;
+      align-items: stretch;
     }
 
     /* ── D-PAD ── */
-    /* DESIGN UPGRADE: Frosted glass D-pad container */
     .dpad-wrap {
       background: var(--surface);
-      border: 1px solid var(--border-light);
+      border: 1px solid var(--border-md);
       border-radius: var(--radius-xl);
-      padding: 28px 28px 24px;
+      padding: 24px 20px 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 10px;
-      width: 100%;
-      position: relative;
     }
 
     .dpad-row {
@@ -726,62 +676,62 @@
       justify-content: center;
     }
 
-    /* DESIGN UPGRADE: Premium d-pad buttons */
     .dpad-btn {
-      width: 70px; height: 70px;
+      width: 68px; height: 68px;
       border-radius: var(--radius-md);
-      border: 1px solid var(--border-light);
-      background: var(--surface-2);
+      border: 1px solid var(--border-md);
+      background: var(--bg-app);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-family: inherit;
       font-weight: 700;
       color: var(--text-secondary);
-      transition: var(--transition);
+      transition: var(--t);
       -webkit-tap-highlight-color: transparent;
       user-select: none;
+      box-shadow: var(--shadow-sm);
     }
 
     .dpad-btn:hover {
-      border-color: rgba(108,99,255,0.4);
+      border-color: var(--accent);
       color: var(--accent);
-      background: rgba(108,99,255,0.07);
+      background: var(--green-light);
     }
 
     .dpad-btn:active,
     .dpad-btn.pressed {
-      background: rgba(108,99,255,0.15);
+      background: var(--accent);
       border-color: var(--accent);
-      color: var(--accent);
-      transform: scale(.92);
-      box-shadow: var(--glow-accent);
+      color: #fff;
+      transform: scale(.93);
+      box-shadow: none;
     }
 
     .dpad-btn.stop-btn {
-      background: var(--danger-soft);
-      border: 1px solid rgba(240,94,94,0.3);
-      color: var(--danger);
-      width: 70px; height: 70px;
+      background: var(--red-light);
+      border: 1px solid rgba(192,57,43,.2);
+      color: var(--red);
+      width: 68px; height: 68px;
       border-radius: 50%;
-      font-size: .7rem;
+      font-size: .65rem;
       font-weight: 800;
       letter-spacing: .8px;
+      box-shadow: none;
     }
 
     .dpad-btn.stop-btn:hover {
-      background: rgba(240,94,94,0.2);
-      border-color: var(--danger);
-      box-shadow: var(--glow-danger);
+      background: rgba(192,57,43,.15);
+      border-color: var(--red);
     }
 
     .dpad-btn.stop-btn:active,
     .dpad-btn.stop-btn.pressed {
-      background: var(--danger);
+      background: var(--red);
       color: #fff;
-      transform: scale(.92);
+      transform: scale(.93);
     }
 
     /* ── SPEED CARD ── */
@@ -789,8 +739,7 @@
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
-      padding: 18px;
-      width: 100%;
+      padding: 16px 18px;
     }
 
     .speed-header {
@@ -801,27 +750,27 @@
     }
 
     .speed-title {
-      font-size: .62rem;
-      font-weight: 700;
+      font-size: .63rem;
+      font-weight: 600;
       color: var(--text-muted);
       text-transform: uppercase;
-      letter-spacing: .8px;
+      letter-spacing: .7px;
     }
 
     .speed-val {
-      font-size: .9rem;
-      font-weight: 800;
+      font-size: .85rem;
+      font-weight: 700;
       color: var(--accent);
+      font-family: 'DM Mono', monospace;
     }
 
-    /* DESIGN UPGRADE: Custom track slider */
     .speed-slider {
       width: 100%;
       -webkit-appearance: none;
       appearance: none;
       height: 5px;
       border-radius: 3px;
-      background: rgba(255,255,255,0.07);
+      background: var(--surface-3);
       outline: none;
       cursor: pointer;
     }
@@ -831,13 +780,9 @@
       width: 20px; height: 20px;
       border-radius: 50%;
       background: var(--accent);
-      box-shadow: 0 0 12px rgba(108,99,255,0.5);
+      border: 2px solid #fff;
+      box-shadow: var(--shadow-md);
       cursor: pointer;
-      transition: box-shadow .2s;
-    }
-
-    .speed-slider::-webkit-slider-thumb:hover {
-      box-shadow: 0 0 18px rgba(108,99,255,0.7);
     }
 
     /* ── LAST COMMAND ── */
@@ -846,7 +791,6 @@
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       padding: 14px 18px;
-      width: 100%;
       display: flex;
       align-items: center;
       gap: 12px;
@@ -855,136 +799,110 @@
     .cmd-label {
       font-size: .6rem;
       color: var(--text-muted);
-      font-weight: 700;
+      font-weight: 600;
       text-transform: uppercase;
       letter-spacing: .7px;
     }
 
     .cmd-value {
-      font-size: 1rem;
-      font-weight: 800;
+      font-size: .95rem;
+      font-weight: 700;
       color: var(--text-primary);
     }
 
-    .cmd-arrow {
-      margin-left: auto;
-      font-size: 1.3rem;
-      transition: var(--transition);
-    }
+    .cmd-arrow { margin-left: auto; font-size: 1.2rem; }
 
-    /* ══════════════════════════════════════════════
-       STATUS INDICATOR BAR (DESIGN UPGRADE: new element)
-    ══════════════════════════════════════════════ */
-    .system-status-bar {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 10px 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
+    /* ══════════════════════════════════
+       SCROLLBAR
+    ══════════════════════════════════ */
+    ::-webkit-scrollbar { width: 3px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 2px; }
 
-    .status-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: .68rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .status-item-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--text-muted);
-      transition: background var(--transition), box-shadow var(--transition);
-    }
-
-    .status-item-dot.on { background: var(--success); box-shadow: 0 0 5px rgba(61,214,140,0.4); }
-    .status-item-dot.warn { background: var(--warning); }
-    .status-item-dot.off { background: var(--danger); }
-
-    /* ══════════════════════════════════════════════
-       DESKTOP BREAKPOINT
-    ══════════════════════════════════════════════ */
+    /* ══════════════════════════════════
+       DESKTOP LAYOUT (≥768px)
+    ══════════════════════════════════ */
     @media (min-width: 768px) {
-      body { padding: 32px 16px; background: #080a0f; }
+      body {
+        background: #eceae4;
+        padding: 40px 20px 60px;
+        align-items: flex-start;
+        justify-content: center;
+      }
 
       .app-shell {
-        max-width: 480px;
-        border-radius: var(--radius-xl);
+        max-width: 440px;
         min-height: auto;
-        border: 1px solid var(--border-light);
-        box-shadow: 0 24px 80px rgba(0,0,0,0.6);
+        border-radius: var(--radius-xl);
+        border: 1px solid var(--border-md);
+        box-shadow: var(--shadow-lg);
         overflow: hidden;
       }
 
+      .scroll-area { padding: 16px 18px 100px; }
+      .remote-scroll { padding: 16px 18px 100px; }
+
       .bottom-nav {
         position: absolute;
-        bottom: 16px;
-        border-radius: var(--radius-xl);
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100%;
+        transform: none;
+        border-top: 1px solid var(--border);
+        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+        padding: 6px 16px 14px;
+        background: rgba(255,255,255,0.97);
       }
-    }
 
-    /* Scrollbar DESIGN UPGRADE: minimal dark */
-    ::-webkit-scrollbar { width: 4px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.08); border-radius: 2px; }
+      .dpad-btn { width: 72px; height: 72px; }
+      .dpad-btn.stop-btn { width: 72px; height: 72px; }
+    }
   </style>
 </head>
 <body>
-
 <div class="app-shell">
 
-  <!-- ═══════════════════════════════════════
+  <!-- ═════════════════════════════
        PAGE 1 — DASHBOARD
-  ═══════════════════════════════════════ -->
+  ═════════════════════════════ -->
   <div class="page active" id="page-dashboard">
 
     <header>
-      <div class="header-left">
-        <h1>Smart Bag Control</h1>
-        <p>Traveler Pro X1</p>
+      <div class="header-brand">
+        <div class="brand-icon">🎒</div>
+        <div class="header-left">
+          <h1>Smart Bag</h1>
+          <p>Traveler Pro X1</p>
+        </div>
       </div>
       <div class="status-badge" id="status-badge">
-        <span class="status-dot"></span>
+        <span class="status-dot pulse"></span>
         <span id="status-text">Connected</span>
       </div>
     </header>
 
     <div class="scroll-area">
 
-      <!-- ── CENTRAL STATE CARD ── -->
+      <!-- CENTRAL STATE CARD -->
       <div class="central-card">
-
         <div class="state-ring-wrap">
-          <!-- DESIGN UPGRADE: SVG gradient definitions -->
-          <svg class="state-ring-svg" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%"   stop-color="#6c63ff"/>
-                <stop offset="100%" stop-color="#4f8ef7"/>
-              </linearGradient>
-              <linearGradient id="ringGradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%"   stop-color="#3dd68c"/>
-                <stop offset="100%" stop-color="#22c55e"/>
-              </linearGradient>
-            </defs>
-            <circle class="ring-bg"   cx="75" cy="75" r="68" />
-            <circle class="ring-fill" cx="75" cy="75" r="68" id="ring-fill" />
+          <svg class="state-ring-svg" viewBox="0 0 148 148" xmlns="http://www.w3.org/2000/svg">
+            <circle class="ring-bg"   cx="74" cy="74" r="65" />
+            <circle class="ring-fill" cx="74" cy="74" r="65" id="ring-fill" />
           </svg>
           <div class="state-label">
-            <div class="state-status-dot" id="state-dot"></div>
-            <span class="state-text" id="state-text">STANDBY</span>
-            <span class="state-sub"  id="state-sub">System offline</span>
+            <div class="state-pill neutral" id="state-pill">
+              <div class="state-pill-dot"></div>
+              <span id="pill-text">Standby</span>
+            </div>
+            <span class="state-text" id="state-text">OFFLINE</span>
+            <span class="state-sub"  id="state-sub">System inactive</span>
           </div>
         </div>
 
-        <!-- Action Buttons — BACKEND CONNECTED -->
         <div class="action-row">
-          <!-- /toggle endpoint — PRESERVED -->
           <button class="btn btn-primary" id="btn-toggle" onclick="toggle()">
             <span id="btn-toggle-label">Start Follow</span>
           </button>
@@ -992,39 +910,37 @@
             📡 Find Me
           </button>
         </div>
-
       </div>
 
-      <!-- ── STATUS BAR (DESIGN UPGRADE: new at-a-glance bar) ── -->
-      <div class="system-status-bar">
-        <div class="status-item">
-          <div class="status-item-dot" id="dot-follow"></div>
+      <!-- STATUS ROW -->
+      <div class="status-row">
+        <div class="status-chip">
+          <div class="chip-dot" id="dot-follow"></div>
           Follow
         </div>
-        <div class="status-item">
-          <div class="status-item-dot" id="dot-ready"></div>
+        <div class="status-chip">
+          <div class="chip-dot" id="dot-ready"></div>
           Ready
         </div>
-        <div class="status-item">
-          <div class="status-item-dot" id="dot-moving"></div>
+        <div class="status-chip">
+          <div class="chip-dot" id="dot-moving"></div>
           Moving
         </div>
-        <div class="status-item">
-          <div class="status-item-dot" id="dot-gps"></div>
+        <div class="status-chip">
+          <div class="chip-dot" id="dot-gps"></div>
           GPS
         </div>
       </div>
 
-      <!-- ── SENSOR DATA ── -->
+      <!-- SENSOR DATA -->
       <span class="section-label">Live Sensors</span>
 
       <div class="cards-grid">
 
-        <!-- CARD: RSSI -->
         <div class="data-card">
           <div class="card-header">
             <span class="card-title">Signal</span>
-            <span class="card-badge accent">RSSI</span>
+            <span class="card-tag tag-gray">RSSI</span>
           </div>
           <div class="signal-bars" id="signal-bars">
             <div class="bar"></div>
@@ -1033,16 +949,14 @@
             <div class="bar"></div>
             <div class="bar"></div>
           </div>
-          <!-- real rssi from /get_data -->
           <div class="card-value" id="rssi-value">--</div>
           <div class="card-sub">dBm strength</div>
         </div>
 
-        <!-- CARD: Compass — real raw_d from /get_data + /comp endpoint -->
         <div class="data-card">
           <div class="card-header">
             <span class="card-title">Heading</span>
-            <span class="card-badge accent">IMU</span>
+            <span class="card-tag tag-gray">IMU</span>
           </div>
           <div class="compass-wrap">
             <div class="compass-ring">
@@ -1050,40 +964,39 @@
             </div>
             <div>
               <div class="card-value" id="compass-deg">0°</div>
-              <div class="card-sub" id="compass-dir">Waiting...</div>
+              <div class="card-sub" id="compass-dir">Waiting…</div>
             </div>
           </div>
         </div>
 
-        <!-- CARD: GPS — real gps string from /get_data -->
         <div class="data-card full">
           <div class="card-header">
             <span class="card-title">GPS Location</span>
-            <span class="card-badge green" id="gps-status-badge">Searching</span>
+            <span class="card-tag tag-amber" id="gps-status-badge">Searching</span>
           </div>
-          <div class="gps-content" id="gps-val">Waiting for fix...</div>
+          <div class="gps-content" id="gps-val">Waiting for fix…</div>
         </div>
 
       </div>
 
-      <!-- ── NOTIFICATIONS ── -->
+      <!-- NOTIFICATIONS -->
       <span class="section-label">System Log</span>
 
       <div class="notif-card">
         <div class="notif-header">
           <span class="notif-title">Event Feed</span>
-          <button class="notif-clear" onclick="clearNotifications()">Clear</button>
+          <button class="notif-clear" onclick="clearNotifications()">Clear all</button>
         </div>
         <div class="notif-list" id="notif-list"></div>
       </div>
 
     </div>
-  </div><!-- /page-dashboard -->
+  </div><!-- /dashboard -->
 
 
-  <!-- ═══════════════════════════════════════
+  <!-- ═════════════════════════════
        PAGE 2 — REMOTE CONTROL
-  ═══════════════════════════════════════ -->
+  ═════════════════════════════ -->
   <div class="page remote-page" id="page-remote">
 
     <div class="remote-header">
@@ -1093,9 +1006,6 @@
 
     <div class="remote-scroll">
 
-      <!-- D-Pad — BACKEND NOTE: these just display the command locally;
-           actual motor control is handled by ArduinoSerial on the ESP32.
-           In a real WebSocket/Serial integration these would send commands. -->
       <div class="dpad-wrap">
         <div class="dpad-row">
           <button class="dpad-btn" id="btn-fwd"
@@ -1127,18 +1037,16 @@
         </div>
       </div>
 
-      <!-- Speed Slider -->
       <div class="speed-card">
         <div class="speed-header">
           <span class="speed-title">Drive Speed</span>
           <span class="speed-val" id="speed-display">50%</span>
         </div>
         <input type="range" class="speed-slider" id="speed-slider"
-               min="0" max="100" value="50"
+               min="0" max="100" value="50" step="1"
                oninput="updateSpeed(this.value)" />
       </div>
 
-      <!-- Last Command -->
       <div class="cmd-display">
         <div>
           <div class="cmd-label">Last Command</div>
@@ -1148,19 +1056,17 @@
       </div>
 
     </div>
-  </div><!-- /page-remote -->
+  </div><!-- /remote -->
 
 
-  <!-- ═══════════════════════════════════════
-       BOTTOM NAVIGATION
-  ═══════════════════════════════════════ -->
+  <!-- BOTTOM NAV -->
   <nav class="bottom-nav">
     <button class="nav-tab active" id="tab-dashboard" onclick="switchPage('dashboard')">
-      <span class="nav-tab-icon">📊</span>
+      <span class="nav-icon">📊</span>
       Dashboard
     </button>
     <button class="nav-tab" id="tab-remote" onclick="switchPage('remote')">
-      <span class="nav-tab-icon">🕹️</span>
+      <span class="nav-icon">🕹️</span>
       Remote
     </button>
   </nav>
@@ -1168,21 +1074,15 @@
 </div><!-- /app-shell -->
 
 <script>
-  /* ════════════════════════════════════════════
-     LOCAL UI STATE (display only, no simulation)
-  ════════════════════════════════════════════ */
   const uiState = {
     speed: 50,
     lastCmd: 'Idle',
-    // Compass state (mirrors original JS exactly)
     lastSentHeading: 0,
     smoothedHeading: 0,
     compStarted: false,
   };
 
-  /* ════════════════════════════════════════════
-     PAGE NAVIGATION (preserved)
-  ════════════════════════════════════════════ */
+  /* ── NAVIGATION ── */
   function switchPage(name) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
@@ -1190,12 +1090,9 @@
     document.getElementById('tab-' + name).classList.add('active');
   }
 
-  /* ════════════════════════════════════════════
-     TOGGLE — ORIGINAL /toggle ENDPOINT PRESERVED
-  ════════════════════════════════════════════ */
+  /* ── TOGGLE ── */
   function toggle() {
     fetch('/toggle');
-    // Compass setup mirrors original JS exactly
     if (!uiState.compStarted) {
       if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
         DeviceOrientationEvent.requestPermission();
@@ -1213,24 +1110,18 @@
         let d = Math.round(uiState.smoothedHeading - uiState.lastSentHeading);
         if (d > 180) d -= 360;
         if (d < -180) d += 360;
-        fetch('/comp?d=' + d);  // /comp ENDPOINT PRESERVED
+        fetch('/comp?d=' + d);
         uiState.lastSentHeading = uiState.smoothedHeading;
       }, 1000);
       uiState.compStarted = true;
     }
   }
 
-  /* ════════════════════════════════════════════
-     FIND ME — local notification only (no new endpoint)
-  ════════════════════════════════════════════ */
   function triggerFindMe() {
     addNotification('Find Me alert sent — buzzer activated', 'warn');
   }
 
-  /* ════════════════════════════════════════════
-     /get_data POLLING — ORIGINAL ENDPOINT + INTERVAL PRESERVED
-     All UI updates driven exclusively by real backend data.
-  ════════════════════════════════════════════ */
+  /* ── POLLING ── */
   function update() {
     fetch('/get_data')
       .then(r => r.json())
@@ -1240,74 +1131,60 @@
         updateGPS(d.gps);
         updateSystemState(d.follow, d.ready, d.moving);
         updateStatusDots(d.follow, d.ready, d.moving, d.gps);
+        document.getElementById('status-badge').classList.remove('disconnected');
+        document.getElementById('status-text').textContent = 'Connected';
       })
       .catch(() => {
-        // Connection lost
         document.getElementById('status-badge').classList.add('disconnected');
         document.getElementById('status-text').textContent = 'Offline';
       });
   }
 
-  // ORIGINAL 200ms polling interval preserved
   setInterval(update, 200);
 
-  /* ════════════════════════════════════════════
-     RSSI DISPLAY — logic mirrors original exactly
-     LOST if <= -110
-  ════════════════════════════════════════════ */
+  /* ── RSSI ── */
   function updateRSSI(rssi) {
     const el = document.getElementById('rssi-value');
-
     if (rssi <= -110) {
       el.textContent = 'LOST';
-      el.classList.add('lost');
+      el.classList.add('lost-val');
       updateSignalBars(0);
       return;
     }
-
     el.textContent = rssi + ' dBm';
-    el.classList.remove('lost');
-
-    // Bar level mapping (mirrors original)
+    el.classList.remove('lost-val');
     let bars;
     if      (rssi >= -55) bars = 5;
     else if (rssi >= -65) bars = 4;
     else if (rssi >= -75) bars = 3;
     else if (rssi >= -85) bars = 2;
     else                  bars = 1;
-
     updateSignalBars(bars, rssi);
   }
 
-  /* ════════════════════════════════════════════
-     SIGNAL BARS WITH COLOR CODING (DESIGN UPGRADE)
-  ════════════════════════════════════════════ */
   function updateSignalBars(level, rssi) {
-    const bars = document.querySelectorAll('.bar');
-    bars.forEach((bar, i) => {
-      bar.classList.remove('active', 'warn', 'danger');
+    document.querySelectorAll('.bar').forEach((bar, i) => {
+      bar.classList.remove('on', 'sig-warn', 'sig-bad');
       if (i < level) {
-        bar.classList.add('active');
+        bar.classList.add('on');
         if (rssi !== undefined) {
-          if      (rssi < -85) bar.classList.add('danger');
-          else if (rssi < -75) bar.classList.add('warn');
+          if      (rssi < -85) bar.classList.add('sig-bad');
+          else if (rssi < -75) bar.classList.add('sig-warn');
         }
       }
     });
   }
 
-  /* ════════════════════════════════════════════
-     COMPASS — uses raw_d from /get_data
-  ════════════════════════════════════════════ */
+  /* ── COMPASS ── */
   const dirLabels = [
     { max: 22.5,  label: 'North' },
-    { max: 67.5,  label: 'North-East' },
+    { max: 67.5,  label: 'NE' },
     { max: 112.5, label: 'East' },
-    { max: 157.5, label: 'South-East' },
+    { max: 157.5, label: 'SE' },
     { max: 202.5, label: 'South' },
-    { max: 247.5, label: 'South-West' },
+    { max: 247.5, label: 'SW' },
     { max: 292.5, label: 'West' },
-    { max: 337.5, label: 'North-West' },
+    { max: 337.5, label: 'NW' },
     { max: 360,   label: 'North' },
   ];
 
@@ -1319,109 +1196,93 @@
     document.getElementById('compass-dir').textContent = dir.label;
   }
 
-  /* ════════════════════════════════════════════
-     GPS — displays raw string from backend
-  ════════════════════════════════════════════ */
+  /* ── GPS ── */
   function updateGPS(gpsStr) {
-    document.getElementById('gps-val').innerHTML = gpsStr || 'Waiting for fix...';
+    document.getElementById('gps-val').innerHTML = gpsStr || 'Waiting for fix…';
     const hasFix = gpsStr && !gpsStr.includes('Waiting');
     const badge = document.getElementById('gps-status-badge');
     badge.textContent = hasFix ? 'Fixed' : 'Searching';
-    badge.className = 'card-badge ' + (hasFix ? 'green' : 'warn');
+    badge.className = 'card-tag ' + (hasFix ? 'tag-green' : 'tag-amber');
   }
 
-  /* ════════════════════════════════════════════
-     SYSTEM STATE — maps follow/ready/moving to UI
-     All states mirror original getHTML() logic:
-     STANDBY / STABILIZING / WAITING / MOVING / LOST
-  ════════════════════════════════════════════ */
+  /* ── SYSTEM STATE ── */
   let prevFollow = false;
 
   function updateSystemState(follow, ready, moving) {
-    const btn      = document.getElementById('btn-toggle');
-    const label    = document.getElementById('btn-toggle-label');
-    const dot      = document.getElementById('state-dot');
-    const ring     = document.getElementById('ring-fill');
-    const stateTxt = document.getElementById('state-text');
-    const stateSub = document.getElementById('state-sub');
+    const btn   = document.getElementById('btn-toggle');
+    const label = document.getElementById('btn-toggle-label');
+    const pill  = document.getElementById('state-pill');
+    const pillTxt = document.getElementById('pill-text');
+    const ring  = document.getElementById('ring-fill');
+    const stTxt = document.getElementById('state-text');
+    const stSub = document.getElementById('state-sub');
 
-    // Button state
-    if (follow) {
-      btn.classList.add('active-stop');
-      label.textContent = 'Stop System';
-    } else {
-      btn.classList.remove('active-stop');
-      label.textContent = 'Start Follow';
-    }
+    btn.classList.toggle('stop-mode', !!follow);
+    label.textContent = follow ? 'Stop System' : 'Start Follow';
 
-    // Notification on state change
     if (follow !== prevFollow) {
       addNotification(follow ? 'System started — tracking active' : 'System stopped', follow ? 'info' : 'success');
       prevFollow = follow;
     }
 
-    // State machine display
-    dot.className = 'state-status-dot';
     ring.className = 'ring-fill';
+    pill.className = 'state-pill';
 
-    const circ = 2 * Math.PI * 68;
+    const C = 2 * Math.PI * 65;
 
     if (!follow) {
-      stateTxt.textContent = 'STANDBY';
-      stateSub.textContent  = 'System offline';
-      ring.style.strokeDashoffset = circ * 0.75;
-      document.getElementById('status-badge').classList.remove('disconnected');
-      document.getElementById('status-text').textContent = 'Connected';
+      stTxt.textContent = 'OFFLINE';
+      stSub.textContent  = 'System inactive';
+      ring.style.strokeDashoffset = C * 0.75;
+      pill.classList.add('neutral');
+      pillTxt.textContent = 'Standby';
     } else if (!ready) {
-      stateTxt.textContent = 'STABILIZING';
-      stateSub.textContent  = 'Warming up sensors';
-      ring.style.strokeDashoffset = circ * 0.5;
-      dot.style.background  = 'var(--warning)';
-      dot.style.boxShadow   = 'var(--glow-warning)';
+      stTxt.textContent = 'WARMING UP';
+      stSub.textContent  = 'Stabilising sensors';
+      ring.style.strokeDashoffset = C * 0.5;
+      pill.classList.add('warn');
+      pillTxt.textContent = 'Stabilising';
     } else if (moving) {
-      stateTxt.textContent = 'MOVING';
-      stateSub.textContent  = 'Tracking active';
-      ring.className = 'ring-fill moving-ring';
-      ring.style.strokeDashoffset = circ * 0.1;
-      dot.classList.add('moving');
+      stTxt.textContent = 'MOVING';
+      stSub.textContent  = 'Tracking active';
+      ring.classList.add('ring-moving');
+      ring.style.strokeDashoffset = C * 0.08;
+      pill.classList.add('blue');
+      pillTxt.textContent = 'Tracking';
     } else {
-      // ready, follow=true, not moving — check RSSI for LOST
       const rssiEl = document.getElementById('rssi-value');
-      if (rssiEl.classList.contains('lost')) {
-        stateTxt.textContent = 'LOST';
-        stateSub.textContent  = 'Signal out of range';
-        ring.className = 'ring-fill lost-ring';
-        ring.style.strokeDashoffset = circ * 0.85;
-        dot.classList.add('lost');
+      if (rssiEl.classList.contains('lost-val')) {
+        stTxt.textContent = 'SIGNAL LOST';
+        stSub.textContent  = 'Out of range';
+        ring.classList.add('ring-lost');
+        ring.style.strokeDashoffset = C * 0.85;
+        pill.classList.add('danger');
+        pillTxt.textContent = 'Lost';
       } else {
-        stateTxt.textContent = 'WAITING';
-        stateSub.textContent  = 'In range — idle';
-        ring.style.strokeDashoffset = circ * 0.35;
+        stTxt.textContent = 'WAITING';
+        stSub.textContent  = 'In range — idle';
+        ring.style.strokeDashoffset = C * 0.35;
+        pill.classList.add('neutral');
+        pillTxt.textContent = 'Idle';
       }
     }
   }
 
-  /* ════════════════════════════════════════════
-     STATUS DOTS BAR (DESIGN UPGRADE: visual only)
-  ════════════════════════════════════════════ */
+  /* ── STATUS DOTS ── */
   function updateStatusDots(follow, ready, moving, gps) {
-    const set = (id, state) => {
+    const set = (id, s) => {
       const el = document.getElementById(id);
       el.classList.remove('on', 'warn', 'off');
-      if (state === 'on')   el.classList.add('on');
-      if (state === 'warn') el.classList.add('warn');
-      if (state === 'off')  el.classList.add('off');
+      if (s) el.classList.add(s);
     };
-    set('dot-follow', follow  ? 'on'  : 'off');
-    set('dot-ready',  ready   ? 'on'  : (follow ? 'warn' : 'off'));
-    set('dot-moving', moving  ? 'on'  : 'off');
+    set('dot-follow', follow ? 'on' : 'off');
+    set('dot-ready',  ready  ? 'on' : (follow ? 'warn' : 'off'));
+    set('dot-moving', moving ? 'on' : 'off');
     const hasFix = gps && !gps.includes('Waiting');
     set('dot-gps', hasFix ? 'on' : 'warn');
   }
 
-  /* ════════════════════════════════════════════
-     REMOTE CONTROL — D-PAD (preserved exactly)
-  ════════════════════════════════════════════ */
+  /* ── D-PAD ── */
   const cmdArrows = { FORWARD:'⬆️', BACKWARD:'⬇️', LEFT:'⬅️', RIGHT:'➡️', STOP:'⏹' };
 
   function pressDir(cmd, btnId) {
@@ -1434,17 +1295,13 @@
     document.getElementById(btnId).classList.remove('pressed');
   }
 
-  /* ════════════════════════════════════════════
-     SPEED SLIDER (preserved)
-  ════════════════════════════════════════════ */
+  /* ── SPEED ── */
   function updateSpeed(val) {
     uiState.speed = val;
     document.getElementById('speed-display').textContent = val + '%';
   }
 
-  /* ════════════════════════════════════════════
-     NOTIFICATIONS (design upgraded, logic same)
-  ════════════════════════════════════════════ */
+  /* ── NOTIFICATIONS ── */
   function addNotification(msg, type) {
     type = type || 'info';
     const list = document.getElementById('notif-list');
@@ -1452,14 +1309,12 @@
     const time = now.getHours().toString().padStart(2,'0') + ':'
                + now.getMinutes().toString().padStart(2,'0') + ':'
                + now.getSeconds().toString().padStart(2,'0');
-
     const item = document.createElement('div');
     item.className = 'notif-item';
     item.innerHTML =
       '<span class="notif-dot ' + type + '"></span>' +
       '<span class="notif-msg">' + msg + '</span>' +
       '<span class="notif-time">' + time + '</span>';
-
     list.insertBefore(item, list.firstChild);
     while (list.children.length > 8) list.removeChild(list.lastChild);
   }
@@ -1468,12 +1323,8 @@
     document.getElementById('notif-list').innerHTML = '';
   }
 
-  /* ════════════════════════════════════════════
-     INIT — seed log, start polling
-  ════════════════════════════════════════════ */
-  addNotification('Dashboard loaded — connecting to bag...', 'info');
-  update(); // immediate first fetch
+  addNotification('Dashboard loaded — connecting…', 'info');
+  update();
 </script>
-
 </body>
 </html>
