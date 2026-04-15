@@ -8,6 +8,9 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ══════════════════════════════════
+       LIGHT THEME (default)
+    ══════════════════════════════════ */
     :root {
       --bg:           #f5f4f0;
       --bg-app:       #ffffff;
@@ -40,6 +43,11 @@
       --green:        #2d6a4f;
       --green-light:  #e8f5ee;
 
+      --nav-bg:       rgba(255,255,255,0.95);
+      --nav-bg-desktop: rgba(255,255,255,0.97);
+
+      --desktop-body-bg: #eceae4;
+
       --radius-sm:  6px;
       --radius-md:  10px;
       --radius-lg:  16px;
@@ -51,6 +59,71 @@
       --shadow-lg:  0 12px 40px rgba(0,0,0,0.12), 0 4px 12px rgba(0,0,0,0.06);
 
       --t: .2s cubic-bezier(.4,0,.2,1);
+
+      /* Theme toggle button */
+      --toggle-bg:     #e8e7e2;
+      --toggle-color:  #5c5a54;
+      --toggle-border: rgba(0,0,0,0.12);
+    }
+
+    /* ══════════════════════════════════
+       DARK THEME
+    ══════════════════════════════════ */
+    body.dark-theme {
+      --bg:           #0f0f12;
+      --bg-app:       #121216;
+      --surface:      #1a1a20;
+      --surface-2:    #1f1f27;
+      --surface-3:    #28282f;
+
+      --border:       rgba(255,255,255,0.07);
+      --border-md:    rgba(255,255,255,0.11);
+      --border-strong:rgba(255,255,255,0.18);
+
+      --text-primary:   #e8e6f0;
+      --text-secondary: #a09eb0;
+      --text-muted:     #6b6980;
+      --text-faint:     #45435a;
+
+      --accent:       #7c6cff;
+      --accent-light: #1e1a3a;
+      --accent-mid:   #9d90ff;
+
+      --blue:         #6b9fff;
+      --blue-light:   #131b30;
+
+      --amber:        #d4943a;
+      --amber-light:  #271e0f;
+
+      --red:          #e05c52;
+      --red-light:    #281414;
+
+      --green:        #7c6cff;
+      --green-light:  #1e1a3a;
+
+      --nav-bg:       rgba(18,18,22,0.95);
+      --nav-bg-desktop: rgba(18,18,22,0.97);
+
+      --desktop-body-bg: #090910;
+
+      --shadow-sm:  0 1px 3px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.2);
+      --shadow-md:  0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.2);
+      --shadow-lg:  0 12px 40px rgba(0,0,0,0.5), 0 4px 12px rgba(0,0,0,0.3);
+
+      /* Theme toggle button */
+      --toggle-bg:     #28282f;
+      --toggle-color:  #a09eb0;
+      --toggle-border: rgba(255,255,255,0.1);
+    }
+
+    /* ── Global color transition ── */
+    body,
+    body * {
+      transition:
+        background-color 0.25s cubic-bezier(.4,0,.2,1),
+        border-color     0.25s cubic-bezier(.4,0,.2,1),
+        color            0.25s cubic-bezier(.4,0,.2,1),
+        box-shadow       0.25s cubic-bezier(.4,0,.2,1);
     }
 
     html { font-size: 16px; overflow-x: hidden; -webkit-text-size-adjust: 100%; }
@@ -131,6 +204,13 @@
       margin-top: 1px;
     }
 
+    /* ── HEADER RIGHT: status + toggle ── */
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
     .status-badge {
       display: inline-flex;
       align-items: center;
@@ -145,10 +225,18 @@
       transition: var(--t);
     }
 
+    body.dark-theme .status-badge {
+      border-color: rgba(124,108,255,0.25);
+    }
+
     .status-badge.disconnected {
       background: var(--red-light);
       color: var(--red);
       border-color: rgba(192,57,43,0.2);
+    }
+
+    body.dark-theme .status-badge.disconnected {
+      border-color: rgba(224,92,82,0.25);
     }
 
     .status-dot {
@@ -163,6 +251,27 @@
       0%,100% { opacity: 1; }
       50% { opacity: .4; }
     }
+
+    /* ── THEME TOGGLE BUTTON ── */
+    .theme-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 30px;
+      height: 30px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--toggle-border);
+      background: var(--toggle-bg);
+      color: var(--toggle-color);
+      cursor: pointer;
+      font-size: 14px;
+      flex-shrink: 0;
+      line-height: 1;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .theme-toggle:active { transform: scale(.92); }
 
     /* ══════════════════════════════════
        SECTION LABELS
@@ -229,7 +338,7 @@
       transition: stroke-dashoffset .7s cubic-bezier(.4,0,.2,1), stroke .4s;
     }
 
-    .ring-fill.ring-moving { stroke: #2563eb; }
+    .ring-fill.ring-moving { stroke: var(--blue); }
     .ring-fill.ring-lost   { stroke: var(--red); }
     .ring-fill.ring-warn   { stroke: var(--amber); }
 
@@ -260,6 +369,10 @@
       transition: var(--t);
     }
 
+    body.dark-theme .state-pill {
+      border-color: rgba(124,108,255,0.18);
+    }
+
     .state-pill-dot {
       width: 5px; height: 5px;
       border-radius: 50%;
@@ -270,6 +383,10 @@
     .state-pill.danger { background: var(--red-light);   color: var(--red);   border-color: rgba(192,57,43,.15); animation: flashPill 1s infinite; }
     .state-pill.blue   { background: var(--blue-light);  color: var(--blue);  border-color: rgba(37,99,235,.15); }
     .state-pill.neutral{ background: var(--surface-2);   color: var(--text-muted); border-color: var(--border); }
+
+    body.dark-theme .state-pill.warn   { border-color: rgba(212,148,58,.18); }
+    body.dark-theme .state-pill.danger { border-color: rgba(224,92,82,.18); }
+    body.dark-theme .state-pill.blue   { border-color: rgba(107,159,255,.18); }
 
     @keyframes flashPill { 0%,100% {opacity:1;} 50% {opacity:.5;} }
 
@@ -322,14 +439,14 @@
       box-shadow: var(--shadow-sm);
     }
 
-    .btn-primary:hover { background: #245c42; }
+    .btn-primary:hover { filter: brightness(1.1); }
 
     .btn-primary.stop-mode {
       background: var(--red);
       border-color: transparent;
     }
 
-    .btn-primary.stop-mode:hover { background: #a33020; }
+    .btn-primary.stop-mode:hover { filter: brightness(1.1); }
 
     .btn-secondary:hover { background: var(--surface-3); color: var(--text-primary); }
 
@@ -368,6 +485,8 @@
     .chip-dot.on   { background: var(--accent); box-shadow: 0 0 0 3px rgba(45,106,79,.12); }
     .chip-dot.warn { background: var(--amber); }
     .chip-dot.off  { background: var(--surface-3); }
+
+    body.dark-theme .chip-dot.on { box-shadow: 0 0 0 3px rgba(124,108,255,.15); }
 
     /* ══════════════════════════════════
        DATA CARDS
@@ -589,7 +708,7 @@
       transform: translateX(-50%);
       width: 100%;
       max-width: 430px;
-      background: rgba(255,255,255,0.95);
+      background: var(--nav-bg);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       border-top: 1px solid var(--border);
@@ -722,9 +841,14 @@
       box-shadow: none;
     }
 
+    body.dark-theme .dpad-btn.stop-btn {
+      border-color: rgba(224,92,82,.2);
+    }
+
     .dpad-btn.stop-btn:hover {
-      background: rgba(192,57,43,.15);
+      background: var(--red-light);
       border-color: var(--red);
+      filter: brightness(1.1);
     }
 
     .dpad-btn.stop-btn:active,
@@ -780,7 +904,7 @@
       width: 20px; height: 20px;
       border-radius: 50%;
       background: var(--accent);
-      border: 2px solid #fff;
+      border: 2px solid var(--bg-app);
       box-shadow: var(--shadow-md);
       cursor: pointer;
     }
@@ -824,7 +948,7 @@
     ══════════════════════════════════ */
     @media (min-width: 768px) {
       body {
-        background: #eceae4;
+        background: var(--desktop-body-bg);
         padding: 40px 20px 60px;
         align-items: flex-start;
         justify-content: center;
@@ -853,7 +977,7 @@
         border-top: 1px solid var(--border);
         border-radius: 0 0 var(--radius-xl) var(--radius-xl);
         padding: 6px 16px 14px;
-        background: rgba(255,255,255,0.97);
+        background: var(--nav-bg-desktop);
       }
 
       .dpad-btn { width: 72px; height: 72px; }
@@ -877,9 +1001,12 @@
           <p>Traveler Pro X1</p>
         </div>
       </div>
-      <div class="status-badge" id="status-badge">
-        <span class="status-dot pulse"></span>
-        <span id="status-text">Connected</span>
+      <div class="header-right">
+        <div class="status-badge" id="status-badge">
+          <span class="status-dot pulse"></span>
+          <span id="status-text">Connected</span>
+        </div>
+        <button class="theme-toggle" id="theme-toggle" onclick="toggleTheme()" title="Toggle theme" aria-label="Toggle dark/light theme">🌙</button>
       </div>
     </header>
 
@@ -1322,6 +1449,33 @@
   function clearNotifications() {
     document.getElementById('notif-list').innerHTML = '';
   }
+
+  /* ── THEME TOGGLE ── */
+  const toggleBtn = document.getElementById('theme-toggle');
+
+  function applyTheme(dark) {
+    if (dark) {
+      document.body.classList.add('dark-theme');
+      toggleBtn.textContent = '☀️';
+    } else {
+      document.body.classList.remove('dark-theme');
+      toggleBtn.textContent = '🌙';
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = document.body.classList.contains('dark-theme');
+    applyTheme(!isDark);
+    try { localStorage.setItem('theme', !isDark ? 'dark' : 'light'); } catch(e) {}
+  }
+
+  /* Restore saved theme on load */
+  (function() {
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved === 'dark') applyTheme(true);
+    } catch(e) {}
+  })();
 
   addNotification('Dashboard loaded — connecting…', 'info');
   update();
